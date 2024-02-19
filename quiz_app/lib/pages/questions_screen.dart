@@ -52,7 +52,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           // the list of string to a list of Widget. So in this case we have
           // an error, [Text(), SiedBox(), [AnswerButton()]], to fix that
           // we will add three dote to find [Text(), SiedBox(), AnswerButton()]
-          ...currentQuestion.getShuffledAnswers().map(
+          ...currentQuestion.shuffledAnswers.map(
             (answer) {
               return AnswerButton(
                 answerText: answer,
