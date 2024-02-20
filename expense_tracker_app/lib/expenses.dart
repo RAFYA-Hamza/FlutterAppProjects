@@ -1,4 +1,5 @@
 import 'package:expense_tracker_app/models/expense.dart';
+import 'package:expense_tracker_app/widgets/expenses_list/expenses_widget.dart';
 import 'package:flutter/material.dart';
 
 class Expenses extends StatefulWidget {
@@ -16,10 +17,16 @@ class _ExpensesState extends State<Expenses> {
       category: Category.work,
     ),
     Expense(
-      title: "Flutter course",
-      amount: 23.7,
+      title: "USA",
+      amount: 25.9,
       date: DateTime.now(),
-      category: Category.work,
+      category: Category.travel,
+    ),
+    Expense(
+      title: "Burger",
+      amount: 29.8,
+      date: DateTime.now(),
+      category: Category.food,
     ),
   ];
 
@@ -27,36 +34,31 @@ class _ExpensesState extends State<Expenses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("data"),
-        actions: const [
-          Icon(Icons.add),
+        title: const Text(
+          "Flutter Expense Tracker",
+          style: TextStyle(
+            fontSize: 12,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.add),
+          ),
         ],
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(25),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.redAccent,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15),
-                ),
-              ),
-              child: const ListTile(
-                title: Text("Flutter course"),
-                subtitle: Text("Price"),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    SizedBox(height: 25),
-                    Text("data time"),
-                  ],
-                ),
-              ),
+          Container(
+            width: double.infinity,
+            height: 100,
+            color: Colors.amber,
+          ),
+          Expanded(
+            child: ExpensesWidget(
+              expense: _registredExpense,
             ),
-          )
+          ),
         ],
       ),
     );
