@@ -1,5 +1,6 @@
 import 'package:expense_tracker_app/models/expense.dart';
 import 'package:expense_tracker_app/widgets/expenses_list/expenses_widget.dart';
+import 'package:expense_tracker_app/widgets/new_expense.dart';
 import 'package:flutter/material.dart';
 
 class Expenses extends StatefulWidget {
@@ -11,24 +12,63 @@ class Expenses extends StatefulWidget {
 class _ExpensesState extends State<Expenses> {
   final List<Expense> _registredExpense = [
     Expense(
-      title: "Flutter course",
-      amount: 23.7,
+      title: "Food",
+      amount: 23.0,
+      date: DateTime.now(),
+      category: Category.food,
+    ),
+    Expense(
+      title: "Work",
+      amount: 24.0,
       date: DateTime.now(),
       category: Category.work,
     ),
     Expense(
-      title: "USA",
-      amount: 25.9,
+      title: "Work",
+      amount: 24.0,
       date: DateTime.now(),
-      category: Category.travel,
-    ),
-    Expense(
-      title: "Burger",
-      amount: 29.8,
-      date: DateTime.now(),
-      category: Category.food,
+      category: Category.work,
     ),
   ];
+
+  void _openAddExpenseOverlay() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (ctx) => NewExpense(onAddExpense: addNewExpense),
+    );
+  }
+
+  void addNewExpense(Expense newExpenseElement) {
+    setState(() {
+      _registredExpense.add(newExpenseElement);
+    });
+  }
+
+  void _removeExpense(Expense expense) {
+    final expenseIndex = _registredExpense.indexOf(expense);
+
+    setState(() {
+      _registredExpense.remove(expense);
+    });
+
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 5),
+        content: const Text("Expense deleted!"),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              _registredExpense.insert(expenseIndex, expense);
+            });
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +77,12 @@ class _ExpensesState extends State<Expenses> {
         title: const Text(
           "Flutter Expense Tracker",
           style: TextStyle(
-            fontSize: 12,
-          ),
+              // fontSize: 12,
+              ),
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: _openAddExpenseOverlay,
             icon: const Icon(Icons.add),
           ),
         ],
@@ -54,11 +94,21 @@ class _ExpensesState extends State<Expenses> {
             height: 100,
             color: Colors.amber,
           ),
-          Expanded(
-            child: ExpensesWidget(
-              expense: _registredExpense,
-            ),
-          ),
+          _registredExpense.isEmpty
+              ? const Expanded(
+                  child: Center(
+                    child: Text(
+                      "No expenses Found. Start adding some!",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : Expanded(
+                  child: ExpensesWidget(
+                    onRemoveExpense: _removeExpense,
+                    expense: _registredExpense,
+                  ),
+                ),
         ],
       ),
     );
