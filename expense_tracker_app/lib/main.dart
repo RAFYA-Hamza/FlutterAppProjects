@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         ),
         cardTheme: const CardTheme().copyWith(
           color: kColorScheme.secondaryContainer,
-          margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          margin: const EdgeInsets.fromLTRB(16, 10, 16, 10),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: ThemeData().textTheme.copyWith(
               titleLarge: TextStyle(
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold,
                 color: kColorScheme.onSecondaryContainer,
-                fontSize: 25,
+                fontSize: 18,
               ),
             ),
       ),
