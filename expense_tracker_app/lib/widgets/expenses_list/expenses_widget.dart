@@ -34,24 +34,14 @@ class ExpensesWidget extends StatelessWidget {
           background: Container(
             padding:
                 EdgeInsets.all(Theme.of(context).cardTheme.margin!.horizontal),
-            alignment: Alignment.center,
+            alignment: Alignment.centerRight,
             color: Colors.red,
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                  Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ],
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 30,
               ),
             ),
           ),
