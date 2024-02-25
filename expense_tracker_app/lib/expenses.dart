@@ -34,6 +34,11 @@ class _ExpensesState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      constraints: const BoxConstraints.expand(
+        height: double.infinity,
+        width: double.infinity,
+      ),
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (ctx) => NewExpense(onAddExpense: addNewExpense),
@@ -73,6 +78,7 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -88,26 +94,49 @@ class _ExpensesState extends State<Expenses> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: _registredExpense),
-          _registredExpense.isEmpty
-              ? const Expanded(
-                  child: Center(
-                    child: Text(
-                      "No expenses Found. Start adding some!",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              : Expanded(
-                  child: ExpensesWidget(
-                    onRemoveExpense: _removeExpense,
-                    expense: _registredExpense,
-                  ),
+      body: width < 600
+          ? Column(
+              children: [
+                Chart(expenses: _registredExpense),
+                _registredExpense.isEmpty
+                    ? const Expanded(
+                        child: Center(
+                          child: Text(
+                            "No expenses Found. Start adding some!",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: ExpensesWidget(
+                          onRemoveExpense: _removeExpense,
+                          expense: _registredExpense,
+                        ),
+                      ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: Chart(expenses: _registredExpense),
                 ),
-        ],
-      ),
+                _registredExpense.isEmpty
+                    ? const Expanded(
+                        child: Center(
+                          child: Text(
+                            "No expenses Found. Start adding some!",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: ExpensesWidget(
+                          onRemoveExpense: _removeExpense,
+                          expense: _registredExpense,
+                        ),
+                      ),
+              ],
+            ),
     );
   }
 }

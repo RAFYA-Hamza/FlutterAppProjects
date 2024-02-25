@@ -60,9 +60,7 @@ class ExpensesWidget extends StatelessWidget {
                   ),
                   subtitle: Text(
                     '\$ ${expense[index].amount.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -70,7 +68,7 @@ class ExpensesWidget extends StatelessWidget {
                     children: [
                       const SizedBox(height: 25),
                       SizedBox(
-                        width: 90,
+                        width: 105,
                         child: Row(
                           children: [
                             Icon(categoryIcons[expense[index].category]),
@@ -78,9 +76,7 @@ class ExpensesWidget extends StatelessWidget {
                             Text(
                               expense[index].formattedDate,
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ],
                         ),
