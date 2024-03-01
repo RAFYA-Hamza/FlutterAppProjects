@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 class IngredientStepWidget extends StatelessWidget {
   const IngredientStepWidget({
     required this.text,
+
+    /// required this.category,
     super.key,
   });
   final String text;
+  // final Category category;
 
   @override
   Widget build(BuildContext context) {

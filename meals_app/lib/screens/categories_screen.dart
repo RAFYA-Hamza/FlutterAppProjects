@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/data/dummy_data.dart';
 import 'package:meals_app/widgets/category_grid_item.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
@@ -8,6 +9,7 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const Drawer(),
       appBar: AppBar(
         title: const Text("Pick your category"),
       ),
@@ -25,6 +27,26 @@ class CategoriesScreen extends StatelessWidget {
           // )
           for (final element in availableCategories)
             CategoryGridItem(category: element),
+        ],
+      ),
+      bottomNavigationBar: GNav(
+        tabs: [
+          GButton(
+            icon: Icons.home,
+            text: 'Home',
+          ),
+          GButton(
+            icon: Icons.headphones,
+            text: 'Likes',
+          ),
+          GButton(
+            icon: Icons.search,
+            text: 'Search',
+          ),
+          GButton(
+            icon: Icons.usb_rounded,
+            text: 'Profile',
+          )
         ],
       ),
     );

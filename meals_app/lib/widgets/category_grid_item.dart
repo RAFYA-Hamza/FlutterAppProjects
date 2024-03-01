@@ -17,8 +17,7 @@ class CategoryGridItem extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return MealsScreen(
-                  title: category.title, id: category.id, meals: dummyMeals);
+              return MealsScreen(category: category, meals: dummyMeals);
             },
           ),
         );

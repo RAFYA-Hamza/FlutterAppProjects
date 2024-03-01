@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app/models/category_model.dart';
 import 'package:meals_app/models/meal_model.dart';
 import 'package:meals_app/widgets/ingredients_steps_widget.dart';
 
 class MealsDetailsScreen extends StatelessWidget {
   const MealsDetailsScreen({
+    required this.category,
     required this.meals,
     super.key,
   });
   final Meal meals;
+  final Category category;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.star),
+          ),
+        ],
+        title: Text(
+          meals.title,
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ),
+      ),
       body: SizedBox(
         height: double.infinity,
         width: double.infinity,
@@ -53,10 +69,10 @@ class MealsDetailsScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        const Text(
+                        Text(
                           "Ingredients",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: category.color,
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
                           ),
@@ -68,10 +84,10 @@ class MealsDetailsScreen extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: 20),
-                        const Text(
+                        Text(
                           "Steps",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: category.color,
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
                           ),
