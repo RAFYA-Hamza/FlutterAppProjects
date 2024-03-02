@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:meals_app_vf/screens/categories.dart';
+import 'package:meals_app_vf/screens/categories_screen.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
@@ -8,7 +7,7 @@ final theme = ThemeData(
     brightness: Brightness.dark,
     seedColor: const Color.fromARGB(255, 131, 57, 0),
   ),
-  textTheme: GoogleFonts.latoTextTheme(),
+  // textTheme: GoogleFonts.latoTextTheme(),
 );
 
 void main() {

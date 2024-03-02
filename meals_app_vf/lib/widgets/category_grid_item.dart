@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app_vf/models/category_model.dart';
+import 'package:meals_app/data/dummy_data.dart';
+import 'package:meals_app/models/category_model.dart';
+import 'package:meals_app/screens/meals_screen.dart';
 
 class CategoryGridItem extends StatelessWidget {
   const CategoryGridItem({
@@ -12,13 +14,13 @@ class CategoryGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (context) {
-        //       return MealsScreen(category: category, meals: dummyMeals);
-        //     },
-        //   ),
-        // );
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return MealsScreen(category: category, meals: dummyMeals);
+            },
+          ),
+        );
       },
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(25),
