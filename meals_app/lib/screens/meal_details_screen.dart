@@ -19,7 +19,7 @@ class MealsDetailsScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.star),
+            icon: const Icon(Icons.star),
           ),
         ],
         title: Text(
