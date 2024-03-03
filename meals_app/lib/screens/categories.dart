@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/data/dummy_data.dart';
+import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/category_grid_item.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:meals_app/models/category_model.dart';
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
+
+  void _selectCategory(BuildContext ctx, Category category) {
+    final newListMeals = dummyMeals
+        .where(
+          (meal) => meal.categories.contains(category.id),
+        )
+        .toList();
+
+    Navigator.of(ctx).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return MealsScreen(title: category.title, meals: newListMeals);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,28 +42,13 @@ class CategoriesScreen extends StatelessWidget {
           // ...availableCategories.map(
           //   (category) => CategoryGridItem(category: category),
           // )
-          for (final element in availableCategories)
-            CategoryGridItem(category: element),
-        ],
-      ),
-      bottomNavigationBar: GNav(
-        tabs: [
-          GButton(
-            icon: Icons.home,
-            text: 'Home',
-          ),
-          GButton(
-            icon: Icons.headphones,
-            text: 'Likes',
-          ),
-          GButton(
-            icon: Icons.search,
-            text: 'Search',
-          ),
-          GButton(
-            icon: Icons.usb_rounded,
-            text: 'Profile',
-          )
+          for (final category in availableCategories)
+            CategoryGridItem(
+              category: category,
+              onSelectCategory: () {
+                _selectCategory(context, category);
+              },
+            ),
         ],
       ),
     );
