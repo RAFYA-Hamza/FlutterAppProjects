@@ -1,26 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/models/meal_model.dart';
+import 'package:meals_app/providers/favorites_provider.dart';
 import 'package:meals_app/widgets/ingredient_step_widget.dart';
 
-class MealsDetailsScreen extends StatelessWidget {
+class MealsDetailsScreen extends ConsumerWidget {
   const MealsDetailsScreen({
-    required this.onToggleFavorite,
     required this.meal,
     super.key,
   });
   final Meal meal;
-  final void Function(Meal meal) onToggleFavorite;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // we need to pass the WidegtRef
+
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
+    final isFavorite = favoriteMeals.contains(meal);
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
             onPressed: () {
-              onToggleFavorite(meal);
+              final wasAdd = ref
+                  .read(favoriteMealsProvider.notifier)
+                  .toggleMealFavoriteStatus(
+                      meal); // we are add notifier to acces the class that define it in our provider
+
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content: Text(
+                      wasAdd ? "Meal marked as a favorite." : "Meal removed."),
+                  action: SnackBarAction(
+                      label: "Undo",
+                      onPressed: () {
+                        ref
+                            .read(favoriteMealsProvider.notifier)
+                            .toggleMealFavoriteStatus(meal);
+                      }),
+                ),
+              );
             },
-            icon: const Icon(Icons.star),
+            icon: Icon(isFavorite ? Icons.star : Icons.star_border),
           ),
         ],
         title: Text(
