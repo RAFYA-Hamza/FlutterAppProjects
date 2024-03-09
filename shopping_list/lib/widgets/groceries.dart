@@ -35,6 +35,9 @@ class _GroceriesScreenState extends State<GroceriesScreen> {
       final List<GroceryItem> loadedItems = [];
 
       if (dataList == null) {
+        setState(() {
+          isLoading = false;
+        });
         return;
       }
 
@@ -142,7 +145,7 @@ class _GroceriesScreenState extends State<GroceriesScreen> {
             return Dismissible(
               key: ValueKey(_groceryItems[index]),
               background: Container(
-                color: Colors.amber,
+                color: _groceryItems[index].category.color,
               ),
               child: ListTile(
                 leading: Container(
@@ -175,7 +178,7 @@ class _GroceriesScreenState extends State<GroceriesScreen> {
                 "No Item add yet!",
               ),
               Text(
-                "Click on add buttun to add some items.",
+                "Click on add button to add some items.",
               ),
             ],
           ),
