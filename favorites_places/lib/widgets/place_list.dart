@@ -21,7 +21,9 @@ class PlaceList extends StatelessWidget {
             itemCount: placesList.length,
             itemBuilder: (context, index) {
               return ListTile(
-                // leading: cir,
+                leading: CircleAvatar(
+                  backgroundImage: FileImage(placesList[index].image),
+                ),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
