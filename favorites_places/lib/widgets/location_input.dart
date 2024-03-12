@@ -1,5 +1,9 @@
+import 'package:favorites_places/model/place.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart' as lat_lng;
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key});
@@ -9,7 +13,8 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
-  Location? _pickedLocation;
+  PlaceLocation? _pickedLocation;
+
   bool _isGettingLocation = false;
 
   void _getCurrentLocation() async {
@@ -42,26 +47,69 @@ class _LocationInputState extends State<LocationInput> {
     locationData = await location.getLocation();
 
     setState(() {
-      _isGettingLocation = false;
+      final double lat;
+      final double lng;
+      lat = locationData.latitude!;
+      lng = locationData.longitude!;
+      _pickedLocation = PlaceLocation(
+        latitude: lat,
+        longitude: lng,
+        address: 'default address',
+      );
     });
 
-    print(locationData);
-    print(locationData.latitude);
-    print(locationData.longitude);
+    setState(() {
+      _isGettingLocation = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Widget flutterMap =  FlutterMap(
-    //         options: MapOptions(
-    //           center: LatLng(51.509364, -0.128928),
-    //           zoom: 3.2,
-    //         ),
-    //         children: [
-    //           TileLayer(
-    //               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    //               userAgentPackageName: 'com.example.app',
-    //           );
+    Widget previewContent = Text(
+      'No location chosen',
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+    );
+
+    if (_pickedLocation?.latitude != null ||
+        _pickedLocation?.longitude != null) {
+      previewContent = FlutterMap(
+        options: MapOptions(
+          initialCenter: lat_lng.LatLng(
+            _pickedLocation!.latitude!,
+            _pickedLocation!.longitude!,
+          ),
+          initialZoom: 1,
+        ),
+        children: [
+          TileLayer(
+            urlTemplate:
+                'https://api.mapbox.com/styles/v1/hrafya/clhopjys001ta01pg0oi8blwj/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaHJhZnlhIiwiYSI6ImNsaG9tY29yMDF4NjkzY254a2J4dzkxaDQifQ.pwEMVKWZFaD7llK40Z0bFA',
+            additionalOptions: const {
+              'accessToken':
+                  'pk.eyJ1IjoiaHJhZnlhIiwiYSI6ImNsaG9tY29yMDF4NjkzY254a2J4dzkxaDQifQ.pwEMVKWZFaD7llK40Z0bFA',
+              'id': 'mapbox.mapbox-streets-v8',
+            },
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: lat_lng.LatLng(
+                    _pickedLocation!.latitude!, _pickedLocation!.longitude!),
+                child: const Icon(Icons.location_on),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    if (_isGettingLocation) {
+      previewContent = const CircularProgressIndicator();
+    }
+
     return Column(
       children: [
         Container(
@@ -74,15 +122,7 @@ class _LocationInputState extends State<LocationInput> {
               color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
             ),
           ),
-          child: _isGettingLocation
-              ? const CircularProgressIndicator()
-              : Text(
-                  'No location chosen',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                ),
+          child: previewContent,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
