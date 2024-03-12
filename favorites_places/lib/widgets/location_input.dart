@@ -1,12 +1,17 @@
 import 'package:favorites_places/model/place.dart';
+import 'package:favorites_places/screens/map.dart';
+import 'package:favorites_places/widgets/flutter_map.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
-
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as loc;
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  const LocationInput({
+    super.key,
+    required this.onSelectedPlace,
+  });
+
+  final void Function(PlaceLocation location) onSelectedPlace;
 
   @override
   State<LocationInput> createState() => _LocationInputState();
@@ -14,15 +19,16 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   PlaceLocation? _pickedLocation;
+  String address = '++';
 
   bool _isGettingLocation = false;
 
   void _getCurrentLocation() async {
-    Location location = Location();
+    loc.Location location = loc.Location();
 
     bool serviceEnabled;
-    PermissionStatus permissionGranted;
-    LocationData locationData;
+    loc.PermissionStatus permissionGranted;
+    loc.LocationData locationData;
 
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
@@ -33,9 +39,9 @@ class _LocationInputState extends State<LocationInput> {
     }
 
     permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
+    if (permissionGranted == loc.PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
+      if (permissionGranted != loc.PermissionStatus.granted) {
         return;
       }
     }
@@ -46,21 +52,59 @@ class _LocationInputState extends State<LocationInput> {
 
     locationData = await location.getLocation();
 
-    setState(() {
-      final double lat;
-      final double lng;
-      lat = locationData.latitude!;
-      lng = locationData.longitude!;
-      _pickedLocation = PlaceLocation(
-        latitude: lat,
-        longitude: lng,
-        address: 'default address',
-      );
-    });
+    final double lat;
+    final double lng;
 
+    lat = locationData.latitude!;
+    lng = locationData.longitude!;
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+    Placemark place = placemarks[0];
+
+    address = '${place.street}, ${place.locality}, ${place.country}';
+    _savedLocation(
+      PlaceLocation(latitude: lat, longitude: lng, address: address),
+    );
+  }
+
+  void _savedLocation(PlaceLocation location) {
     setState(() {
+      _pickedLocation = PlaceLocation(
+        latitude: location.latitude,
+        longitude: location.longitude,
+        address: location.address,
+      );
+
+      widget.onSelectedPlace(_pickedLocation!);
+
       _isGettingLocation = false;
     });
+  }
+
+  void _selectOnMap() async {
+    final pickedLocation = await Navigator.of(context).push<PlaceLocation>(
+      MaterialPageRoute(
+        builder: (context) {
+          return MapScreen();
+        },
+      ),
+    );
+
+    if (pickedLocation == null) {
+      return;
+    }
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        pickedLocation.latitude!, pickedLocation.longitude!);
+    Placemark place = placemarks[0];
+
+    address = '${place.street}, ${place.locality}, ${place.country}';
+
+    _savedLocation(
+      PlaceLocation(
+          latitude: pickedLocation.latitude,
+          longitude: pickedLocation.longitude,
+          address: address),
+    );
   }
 
   @override
@@ -75,34 +119,9 @@ class _LocationInputState extends State<LocationInput> {
 
     if (_pickedLocation?.latitude != null ||
         _pickedLocation?.longitude != null) {
-      previewContent = FlutterMap(
-        options: MapOptions(
-          initialCenter: lat_lng.LatLng(
-            _pickedLocation!.latitude!,
-            _pickedLocation!.longitude!,
-          ),
-          initialZoom: 1,
-        ),
-        children: [
-          TileLayer(
-            urlTemplate:
-                'https://api.mapbox.com/styles/v1/hrafya/clhopjys001ta01pg0oi8blwj/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaHJhZnlhIiwiYSI6ImNsaG9tY29yMDF4NjkzY254a2J4dzkxaDQifQ.pwEMVKWZFaD7llK40Z0bFA',
-            additionalOptions: const {
-              'accessToken':
-                  'pk.eyJ1IjoiaHJhZnlhIiwiYSI6ImNsaG9tY29yMDF4NjkzY254a2J4dzkxaDQifQ.pwEMVKWZFaD7llK40Z0bFA',
-              'id': 'mapbox.mapbox-streets-v8',
-            },
-          ),
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: lat_lng.LatLng(
-                    _pickedLocation!.latitude!, _pickedLocation!.longitude!),
-                child: const Icon(Icons.location_on),
-              ),
-            ],
-          ),
-        ],
+      previewContent = FlutterMapWidget(
+        location: _pickedLocation,
+        isSelecting: false,
       );
     }
 
@@ -133,7 +152,7 @@ class _LocationInputState extends State<LocationInput> {
               label: const Text('Get Current Location'),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: _selectOnMap,
               icon: const Icon(Icons.map_outlined),
               label: const Text('Select on Map'),
             ),

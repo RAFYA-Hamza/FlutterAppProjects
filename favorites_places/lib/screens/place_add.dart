@@ -18,6 +18,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _titleController = TextEditingController();
   String? errorTextEntred;
   File? _selectedImage;
+  PlaceLocation? _selectedLocation;
 
   void _savePlace() {
     final entredTitle = _titleController.text;
@@ -36,6 +37,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
           Place(
             image: _selectedImage!,
             title: entredTitle,
+            location: _selectedLocation!,
           ),
         );
 
@@ -82,7 +84,11 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               },
             ),
             const SizedBox(height: 16),
-            LocationInput(),
+            LocationInput(
+              onSelectedPlace: (location) {
+                _selectedLocation = location;
+              },
+            ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () => _savePlace(),
