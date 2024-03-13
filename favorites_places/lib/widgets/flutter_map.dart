@@ -63,7 +63,7 @@ class _FlutterMapWidgetState extends State<FlutterMapWidget> {
                       widget.location!.longitude!,
                     ),
                 child: const Icon(
-                  Icons.location_on,
+                  Icons.location_pin,
                   color: Colors.red,
                 ),
               ),

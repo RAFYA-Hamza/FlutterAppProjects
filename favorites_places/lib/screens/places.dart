@@ -12,36 +12,50 @@ class PlacesScreen extends ConsumerStatefulWidget {
 }
 
 class _PlacesScreenState extends ConsumerState<PlacesScreen> {
+  late Future<void> _placesFuture;
+  @override
+  void initState() {
+    super.initState();
+    _placesFuture = ref.read(addPlaceProvider.notifier).loadPlace();
+  }
+
   @override
   Widget build(BuildContext context) {
     final getPlaces = ref.watch(addPlaceProvider);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Your Places',
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  fontSize: 20,
-                ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const AddPlaceScreen();
-                    },
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.add,
+      appBar: AppBar(
+        title: Text(
+          'Your Places',
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Theme.of(context).colorScheme.onBackground,
+                fontSize: 20,
               ),
-            ),
-          ],
         ),
-        body: PlaceList(placesList: getPlaces));
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const AddPlaceScreen();
+                  },
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.add,
+            ),
+          ),
+        ],
+      ),
+      body: FutureBuilder(
+        future: _placesFuture,
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? const Center(child: CircularProgressIndicator())
+                : PlaceList(placesList: getPlaces),
+      ),
+    );
   }
 }
