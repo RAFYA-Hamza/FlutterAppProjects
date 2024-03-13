@@ -19,7 +19,7 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   PlaceLocation? _pickedLocation;
-  String address = '++';
+  String address = '';
 
   bool _isGettingLocation = false;
 
@@ -90,20 +90,75 @@ class _LocationInputState extends State<LocationInput> {
       ),
     );
 
+    setState(() {
+      _isGettingLocation = true;
+    });
+
     if (pickedLocation == null) {
       return;
     }
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        pickedLocation.latitude!, pickedLocation.longitude!);
-    Placemark place = placemarks[0];
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          pickedLocation.latitude!, pickedLocation.longitude!);
+      Placemark place = placemarks[0];
 
-    address = '${place.street}, ${place.locality}, ${place.country}';
+      address = '${place.street}, ${place.locality}, ${place.country}';
+    } catch (e) {
+      _showErrorMessage(context);
+    }
 
     _savedLocation(
       PlaceLocation(
           latitude: pickedLocation.latitude,
           longitude: pickedLocation.longitude,
           address: address),
+    );
+  }
+
+  void _showErrorMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: Text(
+            'Error Determining Address',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+          content: Text(
+            'Please zoom in on the map to obtain the exact address.',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Keep it.'),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(
+                    Theme.of(context).colorScheme.onPrimaryContainer),
+              ),
+              onPressed: () {
+                _selectOnMap();
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Try again!',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
