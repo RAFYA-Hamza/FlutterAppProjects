@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyATK1p2yiXTjGep9Ro_LW8LvBlwI9uX8pY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1096335138828</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.chatApp</string>
+	<key>PROJECT_ID</key>
+	<string>calm-seeker-348402</string>
+	<key>STORAGE_BUCKET</key>
+	<string>calm-seeker-348402.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1096335138828:ios:1649bc6b7d6618f0da0e29</string>
+	<key>DATABASE_URL</key>
+	<string>https://calm-seeker-348402-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
